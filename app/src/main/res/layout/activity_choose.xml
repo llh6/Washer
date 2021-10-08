@@ -182,9 +182,11 @@
 		<TextView
 				android:text="白色8/9斤滚筒洗衣机"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:id="@+id/textView11"
+				android:layout_height="wrap_content"
+			android:id="@+id/textView11"
 				app:layout_constraintTop_toTopOf="parent"
-				android:layout_marginTop="20dp" app:layout_constraintStart_toEndOf="@+id/choose_number"
+				android:layout_marginTop="20dp"
+			app:layout_constraintStart_toEndOf="@+id/choose_number"
 				android:layout_marginLeft="5dp" android:layout_marginStart="5dp"/>
 		<ImageView
 				android:layout_width="48dp"

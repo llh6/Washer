@@ -63,7 +63,13 @@ public class Wash {
     }
 
     public String getstatus() {
-        return status;
+        if(status.equals("Y")) {
+            return "空闲";
+        }else if (status.equals("N")){
+            return "忙碌";
+        }else {
+            return "空闲";
+        }
     }
 
     public void setstatus(String status) {
