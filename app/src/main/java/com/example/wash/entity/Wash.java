@@ -68,7 +68,7 @@ public class Wash {
         }else if (status.equals("N")){
             return "忙碌";
         }else {
-            return "空闲";
+            return "故障";
         }
     }
 
