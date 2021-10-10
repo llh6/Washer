@@ -46,6 +46,9 @@ public class Activity_Setting extends AppCompatActivity {
     public static TextView numLimitation1 ;
     public static TextView numLimitation2 ;
     public static TextView numLimitation3 ;
+    public static int start_num = 0;
+    public static int end_num = 0;
+    public static String address = "";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,9 +83,9 @@ public class Activity_Setting extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Activity_Setting.this,MainActivity.class);
-                int start_num = Integer.parseInt(numLimitation1.getText().toString());
-                int end_num = Integer.parseInt(numLimitation2.getText().toString());
-                String address = numLimitation3.getText().toString();
+                start_num = Integer.parseInt(numLimitation1.getText().toString());
+                end_num = Integer.parseInt(numLimitation2.getText().toString());
+                address = numLimitation3.getText().toString();
                 if (address.equals("南区宿舍")){
                     Toast.makeText(Activity_Setting.this, "南区宿舍还未建造完毕哦~", Toast.LENGTH_SHORT).show();
                 }else {
@@ -205,24 +208,26 @@ public class Activity_Setting extends AppCompatActivity {
         }
     }
     public static void getRangeWashers(int start_num, int end_num, String address) {
-        washerslist.clear();
         String start = null;
         String end = null;
         Format f1 = new DecimalFormat("000");
         if(address.equals("全部")){
+            washerslist.clear();
             getAllWashers();
             return;
         }
         else if (address.equals("17A")){
+            washerslist.clear();
             start = String.valueOf(1701)+f1.format(start_num);
             end = String.valueOf(1701)+f1.format(end_num);
         }else if (address.equals("17B")){
+            washerslist.clear();
             start = String.valueOf(1702)+f1.format(start_num);
             end = String.valueOf(1702)+f1.format(end_num);
         }
         OkHttpClient okHttpClient = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://10.161.128.250/api/washer?pageNum=1&pageSize=10&search=&widStart="+start+"&widEnd="+end)
+                .url("http://10.161.128.250/api/washer?pageNum=1&pageSize=10&search=&widStart="+start+"&widEnd="+end+"&widTarget=&widStatus=")
                 .get()
                 .build();
         Call call = okHttpClient.newCall(request);

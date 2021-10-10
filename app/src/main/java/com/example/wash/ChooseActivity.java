@@ -3,14 +3,24 @@ package com.example.wash;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class ChooseActivity extends AppCompatActivity {
     private Fragment Wash_fragment;
@@ -43,25 +53,25 @@ public class ChooseActivity extends AppCompatActivity {
         }
         txt_number.setText("#"+sArray[1]);
         txt_status.setText("#"+sArray[0]);
-        //Toast.makeText(this,result,Toast.LENGTH_LONG).show();
-
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent();
+                Intent intent=new Intent(ChooseActivity.this,MainActivity.class);
                 intent.putExtra("data","");
                 setResult(0,intent);
+                startActivityForResult(intent,0);
                 finish();
             }
         });
     }
 
     public void btn_reserve(View view) {
+        String wid=sArray[1].substring(0,3);
         if (sArray[0].equals("忙碌")){
             Toast.makeText(this,"当前洗衣机正在工作中",Toast.LENGTH_LONG).show();
+            change_statueY(wid);
             return;
         }
-        Intent intent=new Intent();
         if(flag1==-1&&flag2==-1){
             Toast.makeText(this,"请先选择洗衣模式",Toast.LENGTH_LONG).show();
             return;
@@ -69,14 +79,17 @@ public class ChooseActivity extends AppCompatActivity {
         else if(flag1==1){
             txt_money=findViewById(R.id.biaozhun_money);
             txt_time=findViewById(R.id.biaozhun_time);
+            change_statueN(wid);
         }
         else if(flag2==1){
             txt_money=findViewById(R.id.dantuo_money);
             txt_time=findViewById(R.id.dantuo_time);
+            change_statueN(wid);
         }
-
+        Intent intent=new Intent(ChooseActivity.this,MainActivity.class);
         intent.putExtra("data",txt_number.getText()+","+txt_time.getText()+","+txt_money.getText());
         this.setResult(0,intent);
+        startActivityForResult(intent,0);
         this.finish();
     }
 
@@ -91,4 +104,43 @@ public class ChooseActivity extends AppCompatActivity {
         dantuo.setBackgroundColor(Color.rgb(220,220,220));
         biaozhun.setBackgroundColor(Color.WHITE);
     }
+    public void change_statueN(String wid){
+        if (wid.equals("17A"))
+        {
+            wid = String.valueOf(1701)+sArray[1].substring(3,6);
+            post_statue(wid,"N");
+        }else if(wid.equals("17B")){
+            wid = String.valueOf(1702)+sArray[1].substring(3,6);
+            post_statue(wid,"N");
+        }
+    }
+    public void change_statueY(String wid){
+        if (wid.equals("17A"))
+        {
+            wid = String.valueOf(1701)+sArray[1].substring(3,6);
+            post_statue(wid,"Y");
+        }else if(wid.equals("17B")){
+            wid = String.valueOf(1702)+sArray[1].substring(3,6);
+            post_statue(wid,"Y");
+        }
+    }
+    public void post_statue(String wid, String statue){
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url("http://10.161.128.250/api/washer?pageNum=1&pageSize=10&search=&widStart=&widEnd=&widTarget="+wid+"&widStatus="+statue)
+                .get()
+                .build();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("fail", "onFailure: " + e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+            }
+        });
+    }
+
 }

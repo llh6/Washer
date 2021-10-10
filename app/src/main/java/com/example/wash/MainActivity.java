@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.wash.Service.AutoUpdateService;
 import com.example.wash.adapter.myFragmentAdapter;
 import com.example.wash.ui.fragment_Dry;
 import com.example.wash.ui.fragment_Setting;
@@ -63,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         str="";
         initUI();
         initTab();
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
     /*
       初始化UI

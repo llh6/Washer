@@ -1,5 +1,10 @@
 package com.example.wash.ui;
 
+import static com.example.wash.Activity_Setting.address;
+import static com.example.wash.Activity_Setting.end_num;
+import static com.example.wash.Activity_Setting.getRangeWashers;
+import static com.example.wash.Activity_Setting.start_num;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,8 +60,8 @@ public class fragment_Wash extends Fragment {
     private String mParam1;
     private String mParam2;
     public static List<Wash> washerslist =new ArrayList<Wash>();
-    private RecyclerView myrecyclerview;
-    private myRecyclerAdapter myRecyclerAdapter;
+    public static RecyclerView myrecyclerview;
+    public static myRecyclerAdapter myRecyclerAdapter;
     CallBackValue callBackValue;
     private SwipeRefreshLayout mySwipeRefreshLayout;
     private TextView txt_pulldown;
@@ -119,19 +124,26 @@ public class fragment_Wash extends Fragment {
         myrecyclerview.setItemAnimator(null);
         myRecyclerAdapter=new myRecyclerAdapter(washerslist,getActivity());
         myrecyclerview.setAdapter(myRecyclerAdapter);
-        if(washerslist.size()==0)
+        if(washerslist.size()==0&&start_num==0&&end_num==0)
         {
+            Log.i(TAG, "update: 666");
             getAllWashers();
+        }else if (washerslist.size()!=0&&start_num==0&&end_num==0){
+            Log.i(TAG, "update: 777");
+            getAllWashers();
+        }else if (washerslist.size()!=0&&start_num!=0&&end_num!=0)
+        {
+            Log.i(TAG, "update: 888");
+            getRangeWashers(start_num,end_num,address);
         }
         Handler handler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 myRecyclerAdapter.notifyDataSetChanged();
-                handler.postDelayed(this, 500);
             }
         };
-        handler.post(runnable);
+        handler.postDelayed(runnable, 500);
 
         //添加分割线
         myrecyclerview.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
@@ -210,7 +222,6 @@ public class fragment_Wash extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         //myRecyclerAdapter.notifyItemChanged(itemposition-1);
         myRecyclerAdapter.notifyDataSetChanged();
        // Toast.makeText(getActivity(),"第"+itemposition+"刷新了",Toast.LENGTH_LONG).show();
@@ -231,12 +242,12 @@ public class fragment_Wash extends Fragment {
         wash.setMoney(sArray[2]);
         washerslist.set(itemposition-1,wash);
         myRecyclerAdapter.notifyItemChanged(itemposition-1);
-        //Toast.makeText(getActivity(),"将第"+itemposition+"号修改为忙碌",Toast.LENGTH_LONG).show();
+        //Toast.makeText(getActivity(),"将第"+itemposition+"号修改为",Toast.忙碌LENGTH_LONG).show();
     }
 
     //查询历史
     public static void getAllWashers() {
-
+        washerslist.clear();
         OkHttpClient okHttpClient = new OkHttpClient();
         Request request = new Request.Builder()
                 .url("http://10.161.128.250:9090/washer")

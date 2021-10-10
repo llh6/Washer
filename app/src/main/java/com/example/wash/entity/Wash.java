@@ -53,7 +53,7 @@ public class Wash {
         else if(temp.equals("1702")){
             this.num = "17B"+wid.substring(4,7);
         }else{
-            this.num = "测试用例";
+            this.num = wid;
         }
         return num;
     }

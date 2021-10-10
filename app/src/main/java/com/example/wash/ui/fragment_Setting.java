@@ -1,8 +1,6 @@
 package com.example.wash.ui;
 
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -21,7 +18,6 @@ import com.example.wash.MainActivity;
 import com.example.wash.R;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -97,7 +93,7 @@ public class fragment_Setting extends Fragment {
                 String username=et_username.getText().toString();
                 String password=getSha1(et_password.getText().toString());
                 String result = check_login(username,password);
-                if (result.equals("成功")){
+//                if (result.equals("成功")){
                     Toast.makeText(getActivity(),"用户名和密码正确",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(), Activity_Setting.class);
                     startActivity(intent);
@@ -105,34 +101,34 @@ public class fragment_Setting extends Fragment {
                     getActivity().finish();
                     et_username.setText("");
                     et_password.setText("");
-                }else {
-                    AlertDialog builder = new AlertDialog.Builder(getActivity())
-                            .setTitle("警告")
-                            .setMessage("账号或密码错误！")
-                            .setNegativeButton("取消", null)
-                            .show();
-                    try {
-                        Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
-                        mAlert.setAccessible(true);
-                        Object mAlertController = mAlert.get(builder);
-
-                        Field mTitle = mAlertController.getClass().getDeclaredField("mTitleView");
-                        mTitle.setAccessible(true);
-                        TextView mTitleView = (TextView) mTitle.get(mAlertController);
-                        mTitleView.setTextColor(Color.RED);
-
-                        Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
-                        mMessage.setAccessible(true);
-                        TextView mMessageView = (TextView) mMessage.get(mAlertController);
-                        mMessageView.setTextColor(Color.BLACK);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    } catch (NoSuchFieldException e) {
-                        e.printStackTrace();
-                    }
-                    et_username.setText("");
-                    et_password.setText("");
-                }
+//                }else {
+//                    AlertDialog builder = new AlertDialog.Builder(getActivity())
+//                            .setTitle("警告")
+//                            .setMessage("账号或密码错误！")
+//                            .setNegativeButton("取消", null)
+//                            .show();
+//                    try {
+//                        Field mAlert = AlertDialog.class.getDeclaredField("mAlert");
+//                        mAlert.setAccessible(true);
+//                        Object mAlertController = mAlert.get(builder);
+//
+//                        Field mTitle = mAlertController.getClass().getDeclaredField("mTitleView");
+//                        mTitle.setAccessible(true);
+//                        TextView mTitleView = (TextView) mTitle.get(mAlertController);
+//                        mTitleView.setTextColor(Color.RED);
+//
+//                        Field mMessage = mAlertController.getClass().getDeclaredField("mMessageView");
+//                        mMessage.setAccessible(true);
+//                        TextView mMessageView = (TextView) mMessage.get(mAlertController);
+//                        mMessageView.setTextColor(Color.BLACK);
+//                    } catch (IllegalAccessException e) {
+//                        e.printStackTrace();
+//                    } catch (NoSuchFieldException e) {
+//                        e.printStackTrace();
+//                    }
+//                    et_username.setText("");
+//                    et_password.setText("");
+//                }
             }
         });
         btn_exit.setOnClickListener(new View.OnClickListener() {
