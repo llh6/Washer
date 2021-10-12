@@ -69,7 +69,6 @@ public class ChooseActivity extends AppCompatActivity {
         String wid=sArray[1].substring(0,3);
         if (sArray[0].equals("忙碌")){
             Toast.makeText(this,"当前洗衣机正在工作中",Toast.LENGTH_LONG).show();
-            change_statueY(wid);
             return;
         }
         if(flag1==-1&&flag2==-1){

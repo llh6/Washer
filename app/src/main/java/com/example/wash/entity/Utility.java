@@ -1,5 +1,7 @@
 package com.example.wash.entity;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -20,4 +22,17 @@ public class Utility {
 
         return null;
     }
+    @Nullable
+    public static String handleLogin(String response)  {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            String content = "";
+            content = jsonObject.getString("msg");
+            return content;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
