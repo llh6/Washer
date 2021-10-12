@@ -48,7 +48,7 @@ public class Activity_Setting extends AppCompatActivity {
     public static TextView numLimitation3 ;
     public static int start_num = 0;
     public static int end_num = 0;
-    public static String address = "";
+    public static String address = "全部";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.wash.ChooseActivity;
 import com.example.wash.R;
 import com.example.wash.entity.Wash;
 
@@ -47,6 +49,7 @@ public class myRecyclerAdapter extends RecyclerView.Adapter<myRecyclerAdapter.My
             holder.myTime.setVisibility(View.GONE);
             holder.myNumber.setTextColor(context.getResources().getColor(R.color.black));
             holder.myStatus.setTextColor(context.getResources().getColor(R.color.black));
+            new ChooseActivity().post_statue(wash.getWid(),"Y");
         }
         else  if (wash.getstatus().equals("忙碌")){
            holder.myImag.setImageDrawable(context.getResources().getDrawable(R.drawable.wash_ing));

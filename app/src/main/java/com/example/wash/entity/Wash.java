@@ -1,5 +1,7 @@
 package com.example.wash.entity;
 
+import android.os.CountDownTimer;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.regex.Matcher;
@@ -77,6 +79,20 @@ public class Wash {
     }
 
     public String getTime() {
+        if (status.equals("N"))
+        {
+            CountDownTimer countDownTimer = new CountDownTimer(1*1000*60,1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    time = (millisUntilFinished/60000)+1 + "分钟";
+                }
+
+                @Override
+                public void onFinish() {
+                    status = "Y";
+                }
+            }.start();
+        }
         return time;
     }
 
@@ -90,6 +106,10 @@ public class Wash {
 
     public void setMoney(String money) {
         this.money = money;
+    }
+
+    public String getWid() {
+        return wid;
     }
 
     public int matchNum(String str){

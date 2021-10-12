@@ -58,10 +58,13 @@
 				android:text=""
 				android:gravity="center"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:id="@+id/item_time"
+				android:layout_height="wrap_content"
+				android:id="@+id/item_time"
 				app:layout_constraintBottom_toBottomOf="@+id/textView12"
 				app:layout_constraintTop_toTopOf="@+id/textView12" android:layout_marginLeft="5dp"
 				android:layout_marginStart="5dp" app:layout_constraintStart_toEndOf="@+id/item_sandGlass"/>
+
+
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
