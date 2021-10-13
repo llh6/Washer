@@ -6,6 +6,7 @@ import static com.example.wash.Activity_Setting.getRangeWashers;
 import static com.example.wash.Activity_Setting.start_num;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -124,15 +125,15 @@ public class fragment_Wash extends Fragment {
         myrecyclerview.setItemAnimator(null);
         myRecyclerAdapter=new myRecyclerAdapter(washerslist,getActivity());
         myrecyclerview.setAdapter(myRecyclerAdapter);
-        if(washerslist.size()==0&&start_num==0&&end_num==0)
+        SharedPreferences pref = getActivity().getSharedPreferences("data",Context.MODE_PRIVATE);
+        address = pref.getString("address","全部");
+        start_num = pref.getInt("start_num",0);
+        end_num = pref.getInt("end_num",0);
+        if(address.equals("全部"))
         {
             Log.i(TAG, "update: 666");
             getAllWashers();
-        }else if (washerslist.size()!=0&&start_num==0&&end_num==0){
-            Log.i(TAG, "update: 777");
-            getAllWashers();
-        }else if (washerslist.size()!=0&&start_num!=0&&end_num!=0)
-        {
+        }else {
             Log.i(TAG, "update: 888");
             getRangeWashers(start_num,end_num,address);
         }

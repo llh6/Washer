@@ -7,6 +7,7 @@ import static com.example.wash.ui.fragment_Wash.washerslist;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputFilter;
@@ -43,9 +44,9 @@ public class Activity_Setting extends AppCompatActivity {
     private ArrayList<String> numberlist1 = new ArrayList<>();
     private ArrayList<String> numberlist2 = new ArrayList<>();
     private ArrayList<String> numberlist3 = new ArrayList<>();
-    public static TextView numLimitation1 ;
-    public static TextView numLimitation2 ;
-    public static TextView numLimitation3 ;
+    public TextView numLimitation1 ;
+    public TextView numLimitation2 ;
+    public TextView numLimitation3 ;
     public static int start_num = 0;
     public static int end_num = 0;
     public static String address = "全部";
@@ -55,11 +56,15 @@ public class Activity_Setting extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
         Button confirm = findViewById(R.id.confirm);
         Button cancel = findViewById(R.id.cancel);
+        SharedPreferences pref = getSharedPreferences("data",MODE_PRIVATE);
         numLimitation1 = findViewById(R.id.num_limitation1);
         numLimitation2 = findViewById(R.id.num_limitation2);
         numLimitation3 = findViewById(R.id.num_limitation3);
         numLimitation1.setFilters(new InputFilter[]{ new InputFilterMinMax("1", "99")});
         numLimitation2.setFilters(new InputFilter[]{ new InputFilterMinMax("1", "100")});
+        numLimitation1.setText(String.valueOf(pref.getInt("start_num",1)));
+        numLimitation2.setText(String.valueOf(pref.getInt("end_num",100)));
+        numLimitation3.setText(pref.getString("address","全部"));
         initData();
         numLimitation1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +100,11 @@ public class Activity_Setting extends AppCompatActivity {
                     pd2.setCancelable(true);
                     pd2.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                     pd2.show();
+                    SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+                    editor.putString("address",address);
+                    editor.putInt("start_num",start_num);
+                    editor.putInt("end_num",end_num);
+                    editor.apply();
                     getRangeWashers(start_num,end_num,address);
                     new Handler().postDelayed(new Runnable() {
                         @Override

@@ -74,7 +74,6 @@
                         android:inputType="number"
                         android:text="全部"
                         android:layout_height="wrap_content"
-
                         />
                 </LinearLayout>
 
