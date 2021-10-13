@@ -227,7 +227,7 @@ public class Activity_Setting extends AppCompatActivity {
         }
         OkHttpClient okHttpClient = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://10.161.128.250/api/washer?pageNum=1&pageSize=10&search=&widStart="+start+"&widEnd="+end+"&widTarget=&widStatus=")
+                .url("http://120.46.159.117/api/washer?pageNum=1&pageSize=10&search=&widStart="+start+"&widEnd="+end+"&widTarget=&widStatus=")
                 .get()
                 .build();
         Call call = okHttpClient.newCall(request);

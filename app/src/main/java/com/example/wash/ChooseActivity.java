@@ -126,7 +126,7 @@ public class ChooseActivity extends AppCompatActivity {
     public void post_statue(String wid, String statue){
         OkHttpClient okHttpClient = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://10.161.128.250/api/washer?pageNum=1&pageSize=10&search=&widStart=&widEnd=&widTarget="+wid+"&widStatus="+statue)
+                .url("http://120.46.159.117/api/washer?pageNum=1&pageSize=10&search=&widStart=&widEnd=&widTarget="+wid+"&widStatus="+statue)
                 .get()
                 .build();
         Call call = okHttpClient.newCall(request);

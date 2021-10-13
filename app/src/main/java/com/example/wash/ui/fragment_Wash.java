@@ -250,7 +250,7 @@ public class fragment_Wash extends Fragment {
         washerslist.clear();
         OkHttpClient okHttpClient = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://10.161.128.250:9090/washer")
+                .url("http://120.46.159.117:9090/washer")
                 .get()
                 .build();
         Call call = okHttpClient.newCall(request);

@@ -112,7 +112,7 @@ public class fragment_Setting extends Fragment {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if (result.equals("Success")) {
+                            if (result.equals("成功")) {
                             Toast.makeText(getActivity(), "用户名和密码正确", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getActivity(), Activity_Setting.class);
                             startActivity(intent);
@@ -120,7 +120,7 @@ public class fragment_Setting extends Fragment {
                             getActivity().finish();
                             et_username.setText("");
                             et_password.setText("");
-                            } else if (result.equals("Incorrect username or password")) {
+                            } else if (result.equals("账号或密码错误")) {
                                 AlertDialog builder = new AlertDialog.Builder(getActivity())
                                         .setTitle("警告")
                                         .setMessage("账号或密码错误！")
@@ -192,7 +192,7 @@ public class fragment_Setting extends Fragment {
     public void check_login(String user, String password) {
         OkHttpClient okHttpClient = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://10.161.128.250/api/user?pageNum=1&pageSize=10&search=&uid=" + user + "&pw=" + password)
+                .url("http://120.46.159.117/api/user?pageNum=1&pageSize=10&search=&uid=" + user + "&pw=" + password)
                 .get()
                 .build();
         Call call = okHttpClient.newCall(request);
