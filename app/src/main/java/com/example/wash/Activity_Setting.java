@@ -53,6 +53,8 @@ public class Activity_Setting extends AppCompatActivity {
     public static int end_num = 0;
     public static String address = "全部";
     public static String url = "120.46.159.117";
+    private String res = "404";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,29 +102,54 @@ public class Activity_Setting extends AppCompatActivity {
                 if (address.equals("南区宿舍")){
                     Toast.makeText(Activity_Setting.this, "南区宿舍还未建造完毕哦~", Toast.LENGTH_SHORT).show();
                 }else {
-                    ProgressDialog pd2 = new ProgressDialog(Activity_Setting.this);
-                    pd2.setTitle("提示");
-                    pd2.setMessage("玩命加载中...");
-                    pd2.setCancelable(true);
-                    pd2.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    pd2.show();
-                    SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
-                    editor.putString("address",address);
-                    editor.putInt("start_num",start_num);
-                    editor.putInt("end_num",end_num);
-                    editor.putString("ip_address",url);
-                    editor.apply();
-                    getRangeWashers(url,start_num,end_num,address);
-                    new Handler().postDelayed(new Runnable() {
+                    ProgressDialog pd1 = new ProgressDialog(Activity_Setting.this);
+                    pd1.setTitle("提示");
+                    pd1.setMessage("ip验证中...");
+                    pd1.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    pd1.show();
+
+                    Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
-                            pd2.cancel();
-                            finish();
+                            check_ip(url);
                         }
-                    },1000);
+                    });
+                    thread.start();
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                    }
+                    pd1.cancel();
+                    if (res.equals("成功"))
+                    {
+                        Toast.makeText(Activity_Setting.this, "ip连接成功", Toast.LENGTH_SHORT).show();
+                        ProgressDialog pd2 = new ProgressDialog(Activity_Setting.this);
+                        pd2.setTitle("提示");
+                        pd2.setMessage("玩命加载中...");
+                        pd2.setCancelable(true);
+                        pd2.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        pd2.show();
+                        SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+                        editor.putString("address",address);
+                        editor.putInt("start_num",start_num);
+                        editor.putInt("end_num",end_num);
+                        editor.putString("ip_address",url);
+                        editor.apply();
+                        getRangeWashers(url,start_num,end_num,address);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+                                pd2.cancel();
+                                finish();
+                            }
+                        },1000);
+                    }else {
+                        Toast.makeText(Activity_Setting.this, "请检查ip是否正确", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
 
 
             }
@@ -257,12 +284,39 @@ public class Activity_Setting extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText = response.body().string();
-                DataAll dataAll = Utility.handleWashersResponse(responseText);
-                for (Wash wash : dataAll.washerList) {
-                    washerslist.add(wash);
+                try {
+                    DataAll dataAll = Utility.handleWashersResponse(responseText);
+                    for (Wash wash : dataAll.washerList) {
+                        washerslist.add(wash);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
     }
+
+    public String check_ip(String ip_address){
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url("http://"+ip_address+"/api/washer?pageNum=1&pageSize=1000&search")
+                .get()
+                .build();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("fail", "onFailure: " + e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseText = response.body().string();
+                res = Utility.handleIP(responseText);
+            }
+        });
+        return null;
+    }
+
 }
 

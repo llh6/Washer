@@ -75,7 +75,6 @@ public class fragment_Wash extends Fragment {
     private RecyclerView.OnScrollListener loadingListener;
     private Wash wash;
     private int itemposition;
-    private final String TAG="衬衣润";
     public fragment_Wash() {
         // Required empty public constructor
     }
@@ -135,10 +134,8 @@ public class fragment_Wash extends Fragment {
         end_num = pref.getInt("end_num",0);
         if(washerslist.size()==0&&address.equals("全部"))
         {
-            Log.i(TAG, "update: 666");
             getAllWashers(Activity_Setting.url);
         }else {
-            Log.i(TAG, "update: 888");
             getRangeWashers(Activity_Setting.url,start_num,end_num,address);
         }
         Handler handler = new Handler();
@@ -267,9 +264,13 @@ public class fragment_Wash extends Fragment {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText = response.body().string();
-                DataAll dataAll = Utility.handleWashersResponse(responseText);
-                for (Wash wash : dataAll.washerList) {
-                    washerslist.add(wash);
+                try {
+                    DataAll dataAll = Utility.handleWashersResponse(responseText);
+                    for (Wash wash : dataAll.washerList) {
+                        washerslist.add(wash);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });

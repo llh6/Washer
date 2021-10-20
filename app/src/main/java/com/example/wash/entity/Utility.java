@@ -34,5 +34,16 @@ public class Utility {
         }
         return null;
     }
+    public static String handleIP(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            String content = "";
+            content = jsonObject.getString("msg");
+            return content;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }
