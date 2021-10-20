@@ -207,6 +207,12 @@
                     android:text="设置后台IP地址"
                     android:textSize="14dp"
                     />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="初始ip：“120.46.159.117”"
+                    android:textSize="8dp"
+                    />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"

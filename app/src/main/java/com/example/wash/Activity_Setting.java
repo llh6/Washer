@@ -69,6 +69,7 @@ public class Activity_Setting extends AppCompatActivity {
         numLimitation1.setText(String.valueOf(pref.getInt("start_num",1)));
         numLimitation2.setText(String.valueOf(pref.getInt("end_num",100)));
         numLimitation3.setText(pref.getString("address","全部"));
+        ip_address.setText(pref.getString("ip_address","120.46.159.117"));
         initData();
         numLimitation1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +110,7 @@ public class Activity_Setting extends AppCompatActivity {
                     editor.putString("address",address);
                     editor.putInt("start_num",start_num);
                     editor.putInt("end_num",end_num);
-                    editor.putString("url",url);
+                    editor.putString("ip_address",url);
                     editor.apply();
                     getRangeWashers(url,start_num,end_num,address);
                     new Handler().postDelayed(new Runnable() {
