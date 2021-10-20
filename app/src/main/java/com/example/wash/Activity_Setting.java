@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,9 +48,11 @@ public class Activity_Setting extends AppCompatActivity {
     public TextView numLimitation1 ;
     public TextView numLimitation2 ;
     public TextView numLimitation3 ;
+    public EditText ip_address;
     public static int start_num = 0;
     public static int end_num = 0;
     public static String address = "全部";
+    public static String url = "120.46.159.117";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +63,7 @@ public class Activity_Setting extends AppCompatActivity {
         numLimitation1 = findViewById(R.id.num_limitation1);
         numLimitation2 = findViewById(R.id.num_limitation2);
         numLimitation3 = findViewById(R.id.num_limitation3);
+        ip_address = findViewById(R.id.ip_address);
         numLimitation1.setFilters(new InputFilter[]{ new InputFilterMinMax("1", "99")});
         numLimitation2.setFilters(new InputFilter[]{ new InputFilterMinMax("1", "100")});
         numLimitation1.setText(String.valueOf(pref.getInt("start_num",1)));
@@ -91,6 +95,7 @@ public class Activity_Setting extends AppCompatActivity {
                 start_num = Integer.parseInt(numLimitation1.getText().toString());
                 end_num = Integer.parseInt(numLimitation2.getText().toString());
                 address = numLimitation3.getText().toString();
+                url = ip_address.getText().toString();
                 if (address.equals("南区宿舍")){
                     Toast.makeText(Activity_Setting.this, "南区宿舍还未建造完毕哦~", Toast.LENGTH_SHORT).show();
                 }else {
@@ -104,8 +109,9 @@ public class Activity_Setting extends AppCompatActivity {
                     editor.putString("address",address);
                     editor.putInt("start_num",start_num);
                     editor.putInt("end_num",end_num);
+                    editor.putString("url",url);
                     editor.apply();
-                    getRangeWashers(start_num,end_num,address);
+                    getRangeWashers(url,start_num,end_num,address);
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -217,13 +223,13 @@ public class Activity_Setting extends AppCompatActivity {
             return b > a ? c >= a && c <= b : c >= b && c <= a;
         }
     }
-    public static void getRangeWashers(int start_num, int end_num, String address) {
+    public static void getRangeWashers(String url,int start_num, int end_num, String address) {
         String start = null;
         String end = null;
         Format f1 = new DecimalFormat("000");
         if(address.equals("全部")){
             washerslist.clear();
-            getAllWashers();
+            getAllWashers(url);
             return;
         }
         else if (address.equals("17A")){
@@ -237,7 +243,7 @@ public class Activity_Setting extends AppCompatActivity {
         }
         OkHttpClient okHttpClient = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://120.46.159.117/api/washer?pageNum=1&pageSize=10&search=&widStart="+start+"&widEnd="+end+"&widTarget=&widStatus=")
+                .url("http://"+url+"/api/washer?pageNum=1&pageSize=1000&search=&widStart="+start+"&widEnd="+end+"&widTarget=&widStatus=")
                 .get()
                 .build();
         Call call = okHttpClient.newCall(request);

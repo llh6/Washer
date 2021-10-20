@@ -57,7 +57,7 @@ public class myRecyclerAdapter extends RecyclerView.Adapter<myRecyclerAdapter.My
             holder.myNumber.setTextColor(context.getResources().getColor(R.color.red));
             holder.mySandGlass.setImageDrawable(context.getResources().getDrawable(R.drawable.sandglass));
             holder.mySandGlass.setVisibility(View.VISIBLE);
-            holder.myTime.setText(wash.getTime());
+            holder.myTime.setText("大约剩余"+wash.getRemainTime()+"分钟");
             holder.myTime.setVisibility(View.VISIBLE);
             holder.myTime.setTextColor(context.getResources().getColor(R.color.red));
         }

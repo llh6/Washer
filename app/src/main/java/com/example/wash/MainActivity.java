@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private myFragmentAdapter adapter;
     private LinearLayout mTab1,mTab2,mTab3;
     private ImageButton mImag1,mImag2,mImag3;
-    private String str;
+    private static String str ="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         //创建通信对象
         broadCast=new Broadcast();
-        str="";
         initUI();
         initTab();
         Intent intent = new Intent(this, AutoUpdateService.class);
@@ -147,15 +146,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String result;
+        String result = "";
         switch (requestCode){
             case 1:
-                 result=data.getStringExtra("data");
+                try {
+                    result=data.getStringExtra("data");
+                }catch (Exception e){
+
+                }
+
                 break;
             default:
                 result="未获取到相关数据。";
         }
         str=result;
+
         //Toast.makeText(MainActivity.this,result,Toast.LENGTH_LONG).show();
     }
 

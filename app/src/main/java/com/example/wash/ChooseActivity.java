@@ -58,8 +58,7 @@ public class ChooseActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent=new Intent(ChooseActivity.this,MainActivity.class);
                 intent.putExtra("data","");
-                setResult(0,intent);
-                startActivityForResult(intent,0);
+                setResult(1,intent);
                 finish();
             }
         });
@@ -78,17 +77,17 @@ public class ChooseActivity extends AppCompatActivity {
         else if(flag1==1){
             txt_money=findViewById(R.id.biaozhun_money);
             txt_time=findViewById(R.id.biaozhun_time);
-            change_statueN(wid);
+            change_statueN(wid,flag1,flag2);
         }
         else if(flag2==1){
             txt_money=findViewById(R.id.dantuo_money);
             txt_time=findViewById(R.id.dantuo_time);
-            change_statueN(wid);
+            change_statueN(wid,flag1,flag2);
         }
         Intent intent=new Intent(ChooseActivity.this,MainActivity.class);
         intent.putExtra("data",txt_number.getText()+","+txt_time.getText()+","+txt_money.getText());
-        this.setResult(0,intent);
-        startActivityForResult(intent,0);
+        this.setResult(1,intent);
+        startActivity(intent);
         this.finish();
     }
 
@@ -103,15 +102,31 @@ public class ChooseActivity extends AppCompatActivity {
         dantuo.setBackgroundColor(Color.rgb(220,220,220));
         biaozhun.setBackgroundColor(Color.WHITE);
     }
-    public void change_statueN(String wid){
-        if (wid.equals("17A"))
-        {
-            wid = String.valueOf(1701)+sArray[1].substring(3,6);
-            post_statue(wid,"N");
-        }else if(wid.equals("17B")){
-            wid = String.valueOf(1702)+sArray[1].substring(3,6);
-            post_statue(wid,"N");
+    public void change_statueN(String wid,int flag1,int flag2){
+        if (flag1==1&&flag2==-1){
+            if (wid.equals("17A"))
+            {
+                wid = String.valueOf(1701)+sArray[1].substring(3,6);
+                post_statue(wid,"Norm");
+            }else if(wid.equals("17B")){
+                wid = String.valueOf(1702)+sArray[1].substring(3,6);
+                post_statue(wid,"Norm");
+            }else{
+                post_statue(sArray[1],"Spin");
+            }
+        }else if(flag1==-1&&flag2==1){
+            if (wid.equals("17A"))
+            {
+                wid = String.valueOf(1701)+sArray[1].substring(3,6);
+                post_statue(wid,"Spin");
+            }else if(wid.equals("17B")){
+                wid = String.valueOf(1702)+sArray[1].substring(3,6);
+                post_statue(wid,"Spin");
+            }else{
+                post_statue(sArray[1],"Spin");
+            }
         }
+
     }
     public void change_statueY(String wid){
         if (wid.equals("17A"))
@@ -126,7 +141,7 @@ public class ChooseActivity extends AppCompatActivity {
     public void post_statue(String wid, String statue){
         OkHttpClient okHttpClient = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://120.46.159.117/api/washer?pageNum=1&pageSize=10&search=&widStart=&widEnd=&widTarget="+wid+"&widStatus="+statue)
+                .url("http://120.46.159.117/api/washer?pageNum=1&pageSize=1000&search=&widStart=&widEnd=&widTarget="+wid+"&widStatus="+statue)
                 .get()
                 .build();
         Call call = okHttpClient.newCall(request);
@@ -142,4 +157,9 @@ public class ChooseActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.finish();
+    }
 }

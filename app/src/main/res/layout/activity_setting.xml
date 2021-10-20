@@ -172,7 +172,7 @@
         </RelativeLayout>
 
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/setting_item3"
             android:layout_width="match_parent"
             android:layout_height="90dp"
@@ -186,15 +186,50 @@
             android:layout_marginEnd="10dp"
             android:background="@drawable/setting_item"
             >
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="设置3"
-                android:textSize="20dp"
+                android:orientation="vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="设置3"
+                    android:textSize="20dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="设置后台IP地址"
+                    android:textSize="14dp"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginRight="5dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="IP地址:"
+                    />
+                <EditText
+                    android:id="@+id/ip_address"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="120.46.159.117"
+                    />
+            </LinearLayout>
+        </RelativeLayout>
 
-                />
-        </LinearLayout>
         <LinearLayout
             android:id="@+id/setting_item4"
             android:layout_width="match_parent"

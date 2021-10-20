@@ -1,9 +1,10 @@
 package com.example.wash.entity;
 
-import android.os.CountDownTimer;
-
 import com.google.gson.annotations.SerializedName;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,8 +17,9 @@ public class Wash {
     private String num ;
     @SerializedName("status")
     private String status;
+    @SerializedName("endTime")
     private String time;
-    private String money;
+    private String money="";
 //    public Wash(String status,String number){
 //        this.status=status;
 //        this.num=number;
@@ -67,7 +69,7 @@ public class Wash {
     public String getstatus() {
         if(status.equals("Y")) {
             return "空闲";
-        }else if (status.equals("N")){
+        }else if (status.equals("Norm")||status.equals("Spin")){
             return "忙碌";
         }else {
             return "故障";
@@ -78,22 +80,25 @@ public class Wash {
         this.status = status;
     }
 
-    public String getTime() {
-        if (status.equals("N"))
-        {
-            CountDownTimer countDownTimer = new CountDownTimer(1*1000*60,1000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    time = (millisUntilFinished/60000)+1 + "分钟";
+    public String getRemainTime() {
+        String remian_time = "";
+        if (status.equals("Norm")||status.equals("Spin")){
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// HH:mm:ss
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+            try {
+                Date date_end  = simpleDateFormat.parse(time);
+                Date date_now = new Date(System.currentTimeMillis());
+                long res = date_end.getTime()-date_now.getTime();
+                res = res/1000/60;
+                remian_time = String.valueOf(res);
+                if (res<=0){
+                    status="Y";
                 }
+            }catch (Exception e){
 
-                @Override
-                public void onFinish() {
-                    status = "Y";
-                }
-            }.start();
+            }
         }
-        return time;
+        return remian_time;
     }
 
     public void setTime(String time) {

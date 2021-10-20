@@ -21,14 +21,20 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.wash.Activity_Setting;
 import com.example.wash.R;
 import com.example.wash.adapter.OnItemClickListener;
 import com.example.wash.adapter.myRecyclerAdapter;
 import com.example.wash.entity.DataAll;
 import com.example.wash.entity.Utility;
 import com.example.wash.entity.Wash;
+import com.scwang.smartrefresh.header.WaveSwipeHeader;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -36,8 +42,8 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -64,7 +70,7 @@ public class fragment_Wash extends Fragment {
     public static RecyclerView myrecyclerview;
     public static myRecyclerAdapter myRecyclerAdapter;
     CallBackValue callBackValue;
-    private SwipeRefreshLayout mySwipeRefreshLayout;
+    private SmartRefreshLayout mySmartRefreshLayout;
     private TextView txt_pulldown;
     private RecyclerView.OnScrollListener loadingListener;
     private Wash wash;
@@ -116,10 +122,8 @@ public class fragment_Wash extends Fragment {
         // Inflate the layout for this fragment
         View root=inflater.inflate(R.layout.fragment_wash, container, false);
 //        initwash_itemData();
-        //Toast.makeText(getActivity(),"我是fragment_Wash中的onCReatView",Toast.LENGTH_LONG).show();
-        //Log.d(TAG, "这是Wash的Fragment的onCreateView: ");
         myrecyclerview=root.findViewById(R.id.recyclerview);
-        mySwipeRefreshLayout=root.findViewById(R.id.item_swipeRefreshLayout);
+        mySmartRefreshLayout =root.findViewById(R.id.item_swipeRefreshLayout);
         txt_pulldown=root.findViewById(R.id.pull_down);
         myrecyclerview.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
         myrecyclerview.setItemAnimator(null);
@@ -129,13 +133,13 @@ public class fragment_Wash extends Fragment {
         address = pref.getString("address","全部");
         start_num = pref.getInt("start_num",0);
         end_num = pref.getInt("end_num",0);
-        if(address.equals("全部"))
+        if(washerslist.size()==0&&address.equals("全部"))
         {
             Log.i(TAG, "update: 666");
-            getAllWashers();
+            getAllWashers(Activity_Setting.url);
         }else {
             Log.i(TAG, "update: 888");
-            getRangeWashers(start_num,end_num,address);
+            getRangeWashers(Activity_Setting.url,start_num,end_num,address);
         }
         Handler handler = new Handler();
         Runnable runnable = new Runnable() {
@@ -144,7 +148,7 @@ public class fragment_Wash extends Fragment {
                 myRecyclerAdapter.notifyDataSetChanged();
             }
         };
-        handler.postDelayed(runnable, 500);
+        handler.postDelayed(runnable, 300);
 
         //添加分割线
         myrecyclerview.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
@@ -170,10 +174,10 @@ public class fragment_Wash extends Fragment {
                 if (newState==RecyclerView.SCROLL_STATE_IDLE){
                     if(!myrecyclerview.canScrollVertically(1)){
                         //到达底部
-                        Toast.makeText(getActivity(),"你已经触碰到我的底线了",Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getActivity(),"你已经触碰到我的底线了",Toast.LENGTH_SHORT).show();
                     }else if(!myrecyclerview.canScrollVertically(-1)){
                         //到达顶部
-                        Toast.makeText(getActivity(),"别划了，已经划不动了",Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getActivity(),"别划了，已经划不动了",Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -185,36 +189,36 @@ public class fragment_Wash extends Fragment {
         实现下拉刷新
      */
     private void handleDownPullUpdate() {
-        mySwipeRefreshLayout.setEnabled(true);
-        mySwipeRefreshLayout.setColorSchemeResources(R.color.blue,R.color.black);
-        mySwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mySmartRefreshLayout.setEnabled(true);
+        mySmartRefreshLayout.setRefreshHeader(new WaveSwipeHeader(getContext()));
+        mySmartRefreshLayout.setRefreshFooter(new ClassicsFooter(getContext()));
+        mySmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
-                txt_pulldown.setText("正在刷新...");
-                txt_pulldown.setVisibility(View.VISIBLE);
-                new Handler().postDelayed(new Runnable() {
+            public void onRefresh(RefreshLayout refreshLayout) {
+                new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        //txt_pulldown.setText("刷新成功！！！");
-                        mySwipeRefreshLayout.setRefreshing(false);
-                        myRecyclerAdapter.notifyDataSetChanged();
-                        Toast.makeText(getActivity(),"刷新成功！",Toast.LENGTH_SHORT).show();
-                        txt_pulldown.setVisibility(View.GONE);
+                        //结束加载
+                        mySmartRefreshLayout.finishRefresh();
                     }
                 },1000);
+                Toast.makeText(getActivity(), "刷新成功", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mySmartRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshLayout) {
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        mySmartRefreshLayout.finishLoadmore();
+                    }
+                }, 1000);
+                Toast.makeText(getActivity(), "加载成功", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-
-    /*
-        初始化数据
-    */
-//    private void initwash_itemData() {
-//        for (int i=0;i<100;i++){
-//            washerslist.add(new Wash("空闲",i+1+"号"));
-//        }
-//    }
 
     public interface CallBackValue{
         public void SendMessageValue(String value);
@@ -232,26 +236,25 @@ public class fragment_Wash extends Fragment {
     //接受来自Mainactivity的消息，自动调用
     public void hanldeEvent(String str) {
         //分别为number,time,money
-        String[] sArray=str.split(",");
-        String regEx="[^0-9]";
-        Pattern p=Pattern.compile(regEx);
-        Matcher m = p.matcher(sArray[0]);
-        itemposition=Integer.valueOf(m.replaceAll("").trim()) ;
-        wash= washerslist.get(itemposition-1);
-        wash.setstatus("忙碌");
-        wash.setTime(sArray[1]);
-        wash.setMoney(sArray[2]);
-        washerslist.set(itemposition-1,wash);
-        myRecyclerAdapter.notifyItemChanged(itemposition-1);
-        //Toast.makeText(getActivity(),"将第"+itemposition+"号修改为",Toast.忙碌LENGTH_LONG).show();
+//        String[] sArray=str.split(",");
+//        String regEx="[^0-9]";
+//        Pattern p=Pattern.compile(regEx);
+//        Matcher m = p.matcher(sArray[0]);
+//        itemposition=Integer.valueOf(m.replaceAll("").trim()) ;
+//        wash= washerslist.get(itemposition-1);
+//        wash.setstatus("忙碌");
+//        wash.setTime(sArray[1]);
+//        wash.setMoney(sArray[2]);
+//        washerslist.set(itemposition-1,wash);
+//        myRecyclerAdapter.notifyItemChanged(itemposition-1);
     }
 
     //查询历史
-    public static void getAllWashers() {
+    public static void getAllWashers(String url) {
         washerslist.clear();
         OkHttpClient okHttpClient = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://120.46.159.117:9090/washer")
+                .url("http://"+url+"/api/washer?pageNum=1&pageSize=1000&search")
                 .get()
                 .build();
         Call call = okHttpClient.newCall(request);
